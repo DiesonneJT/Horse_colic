@@ -95,7 +95,13 @@ function loadFile(file) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    const lines = e.target.result.trim().split('\n').filter(l => l.trim());
+    let lines = e.target.result.trim().split('\n').filter(l => l.trim());
+
+    // Saltar encabezado si la primera fila no es numérica
+    if (lines.length && isNaN(parseFloat(lines[0].trim().split(/[\s,]+/)[0]))) {
+      lines = lines.slice(1);
+    }
+
     uploadedData = lines.map(l =>
       l.trim().split(/[\s,]+/).map(v => (v === '?' ? NaN : parseFloat(v)))
     );
@@ -122,7 +128,7 @@ function predictBatch() {
 
   const results = uploadedData.map(row => {
     const features  = row.slice(0, 22);
-    const rawLabel  = row[23]; // attr_24: 1=cirugía, 2=no cirugía
+    const rawLabel  = row[22]; // columna 23 del CSV (índice 22): 1=cirugía, 2=no cirugía
     const pred      = predict(features, currentBatchModel);
     const predClass = pred.surgery >= 0.5 ? 1 : 0;
     const trueClass = isNaN(rawLabel) ? null : (rawLabel === 1 ? 1 : 0);
