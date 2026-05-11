@@ -48,9 +48,9 @@ function predictIndividual() {
   const result   = predict(features, currentModel);
   const isSurg   = result.surgery >= 0.5;
 
-  const badge = document.getElementById('result-badge');
-  badge.textContent  = isSurg ? '🔴 Requiere Cirugía' : '🟢 No Requiere Cirugía';
-  badge.className    = 'result-badge ' + (isSurg ? 'surgery' : 'no-surgery');
+  const verdict = document.getElementById('result-verdict-value');
+  verdict.textContent = isSurg ? 'Requiere Cirugía' : 'No Requiere Cirugía';
+  verdict.className   = 'verdict-value ' + (isSurg ? 'surgery' : 'no-surgery');
 
   document.getElementById('result-desc').textContent = isSurg
     ? 'El modelo indica que este paciente probablemente necesita intervención quirúrgica. Se recomienda evaluación clínica inmediata.'
@@ -193,14 +193,14 @@ function _renderConfusionMatrix(results, hasLabels) {
   const { tp, tn, fp, fn } = _calcMetrics(results);
   el.innerHTML = `
     <div></div>
-    <div class="cm-header">Pred: Cirugía</div>
-    <div class="cm-header">Pred: No Cirugía</div>
-    <div class="cm-label">Real: Cirugía</div>
-    <div class="cm-cell cm-tp">${tp}</div>
-    <div class="cm-cell cm-fn">${fn}</div>
-    <div class="cm-label">Real: No Cirugía</div>
-    <div class="cm-cell cm-fp">${fp}</div>
-    <div class="cm-cell cm-tn">${tn}</div>`;
+    <div class="cm-head">Pred: Cirugía</div>
+    <div class="cm-head">Pred: No Cirugía</div>
+    <div class="cm-row-label">Real: Cirugía</div>
+    <div class="cm-cell cm-tp"><span class="cm-num">${tp}</span><span class="cm-tag">TP</span></div>
+    <div class="cm-cell cm-fn"><span class="cm-num">${fn}</span><span class="cm-tag">FN</span></div>
+    <div class="cm-row-label">Real: No Cirugía</div>
+    <div class="cm-cell cm-fp"><span class="cm-num">${fp}</span><span class="cm-tag">FP</span></div>
+    <div class="cm-cell cm-tn"><span class="cm-num">${tn}</span><span class="cm-tag">TN</span></div>`;
 }
 
 function _renderClassReport(results, hasLabels) {
